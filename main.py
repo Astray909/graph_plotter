@@ -24,19 +24,23 @@ def data_importer(inputcsv):
         part_result_df = initiator_df.loc[(initiator_df['product'] == part)]
         prod_id = part_result_df['die']
         product_id_list.append(prod_id.to_string(index=False))
-    product_id_list_len = len(list(dict.fromkeys(product_id_list)))
-    print(product_id_list_len)
+    product_id_list_cleaned = list(dict.fromkeys(product_id_list))
+    product_id_list_len = len(product_id_list)
     pd.options.mode.chained_assignment = None  # default='warn'
     result_df.loc[:,"die"] = product_id_list
     pd.options.mode.chained_assignment = 'warn'  # default='warn'
 
+    df_list = []
     for region, df_region in result_df.groupby('die'):
-        print(df_region)
+        df_list.append(df_region)
 
-    plt.figure(figsize=(16, 6))
+    fig, axes = plt.subplots(1, len(df_list), figsize=(15, 5), sharey=True)
     sns.set_theme(style="whitegrid")
-    ax = sns.boxplot(x="YYWW_datecode", y="Rdson_aging", data=result_df, width=0.5)
-    ax.set_xticklabels(ax.get_xticklabels(),rotation = 30)
+    for i in range(len(df_list)):
+        plotname = 'plt_' + str(i)
+        plotname = sns.boxplot(ax=axes[i], x="YYWW_datecode", y="Rdson_aging", data=df_list[i], width=0.5)
+        axes[i].set_title(str(product_id_list_cleaned[i]))
+        plotname.set_xticklabels(plotname.get_xticklabels(),rotation = 30)
     plt.show()
 
 if __name__ == "__main__":
