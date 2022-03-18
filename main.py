@@ -36,32 +36,41 @@ def data_importer(inputcsv):
     result_datecodes_list = list(dict.fromkeys(result_datecodes_list))
     
     product_id_list = []
+    series_id_list = []
     part_list = result_df['product'].tolist()
     for part in part_list:
         part_result_df = initiator_df.loc[(initiator_df['product'] == part)]
         prod_id = part_result_df['die']
+        series_id = part_result_df['series']
         product_id_list.append(prod_id.to_string(index=False))
+        series_id_list.append(series_id.to_string(index=False))
     product_id_list_cleaned = list(dict.fromkeys(product_id_list))
     product_id_list_len = len(product_id_list)
+    series_id_list_cleaned = list(dict.fromkeys(series_id_list))
+    series_id_list_len = len(series_id_list)
     pd.options.mode.chained_assignment = None  # default='warn'
     result_df.loc[:,"die"] = product_id_list
+    result_df.loc[:,"series"] = series_id_list
     pd.options.mode.chained_assignment = 'warn'  # default='warn'
+
+    id_list_cleaned = product_id_list_cleaned + series_id_list_cleaned
 
     df_list = []
     for region, df_region in result_df.groupby('die'):
         df_list.append(df_region)
+    for region_2, df_region_2 in result_df.groupby('series'):
+        df_list.append(df_region_2)
 
-    # fig, axes = plt.subplots(1, len(df_list), figsize=(15, 5), sharey=True)
-    plt.figure(figsize=(16, 6))
-    sns.set_theme(style="whitegrid")
-    for i in range(len(df_list)):
-        plotname = 'plt_' + str(i)
-        # plotname = sns.boxplot(ax=axes[i], x="YYWW_datecode", y="Rdson_aging", data=df_list[i], width=0.5)
-        plotname = sns.boxplot(x="YYWW_datecode", y="Rdson_aging", data=df_list[i], width=0.5)
-        # axes[i].set_title(str(product_id_list_cleaned[i]))
-        plotname.set_title(str(product_id_list_cleaned[i]))
-        plotname.set_xticklabels(plotname.get_xticklabels(),rotation = 30)
-        plt.show()
+    columns_arr = ['Rdson_aging','Vth_shift','Igss_rise','Idoff_rise']
+    for c in columns_arr:
+        for i in range(len(df_list)):
+            plt.figure(figsize=(16, 6))
+            sns.set_theme(style="whitegrid")
+            plotname = 'plt_' + str(i)
+            plotname = sns.boxplot(x="YYWW_datecode", y=c, data=df_list[i], width=0.5)
+            plotname.set_title(str(id_list_cleaned[i]))
+            plotname.set_xticklabels(plotname.get_xticklabels(),rotation = 30)
+            plt.show()
 
 #natural sort
 def ntSort(input): 
