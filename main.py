@@ -61,16 +61,21 @@ def data_importer(inputcsv):
     for region_2, df_region_2 in result_df.groupby('series'):
         df_list.append(df_region_2)
 
+    desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+
     columns_arr = ['Rdson_aging','Vth_shift','Igss_rise','Idoff_rise']
     for c in columns_arr:
         for i in range(len(df_list)):
+            i_no_number = ''.join([ii for ii in str(i) if not ii.isdigit()])
+            plt_filename = 'plt_' + str(id_list_cleaned[i]) + '_' + str(i_no_number) + str(c)
             plt.figure(figsize=(16, 6))
             sns.set_theme(style="whitegrid")
             plotname = 'plt_' + str(i)
             plotname = sns.boxplot(x="YYWW_datecode", y=c, data=df_list[i], width=0.5)
             plotname.set_title(str(id_list_cleaned[i]))
             plotname.set_xticklabels(plotname.get_xticklabels(),rotation = 30)
-            plt.show()
+            # plt.show()
+            plt.savefig(desktop + '\\PLOTTING_TEST\\' + plt_filename + '.png')
 
 #natural sort
 def ntSort(input): 
