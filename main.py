@@ -76,6 +76,7 @@ def data_importer(inputcsv):
             plotname.set_xticklabels(plotname.get_xticklabels(),rotation = 30)
             # plt.show()
             plt.savefig(desktop + '\\PLOTTING_TEST\\' + plt_filename + '.png')
+            plt.close()
 
 #natural sort
 def ntSort(input): 
