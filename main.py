@@ -44,9 +44,9 @@ def data_importer(inputcsv):
         series_id = part_result_df['series']
         product_id_list.append(prod_id.to_string(index=False))
         series_id_list.append(series_id.to_string(index=False))
-    product_id_list_cleaned = list(dict.fromkeys(product_id_list))
+    product_id_list_cleaned = ntSort(list(dict.fromkeys(product_id_list)))
     product_id_list_len = len(product_id_list)
-    series_id_list_cleaned = list(dict.fromkeys(series_id_list))
+    series_id_list_cleaned = ntSort(list(dict.fromkeys(series_id_list)))
     series_id_list_len = len(series_id_list)
     pd.options.mode.chained_assignment = None  # default='warn'
     result_df.loc[:,"die"] = product_id_list
